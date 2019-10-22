@@ -27,7 +27,7 @@ private Set<BigInteger> defineDelivers(BigInteger key){
    }
 
 //power big integer
-    private static BigInteger power(BigInteger a, BigInteger z, BigInteger m)
+    public static BigInteger power(BigInteger a, BigInteger z, BigInteger m)
     {
         BigInteger a1 = a;
         BigInteger z1 = z;
@@ -67,4 +67,17 @@ List<BigInteger> getPrimitivesRoot(BigInteger key){
 
        return primitiveRoots;
    }
+
+    public static int ElerFunc (int n) {
+        int result = n;
+        for (int i=2; i*i<=n; ++i)
+            if (n % i == 0) {
+                while (n % i == 0)
+                    n /= i;
+                result -= result / i;
+            }
+        if (n > 1)
+            result -= result / n;
+        return result;
+    }
 }
