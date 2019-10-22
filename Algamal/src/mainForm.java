@@ -198,11 +198,11 @@ public class mainForm extends JFrame {
     }
 
     private void showRoots(List roots){
-        String rootStr = "";
-        for (int i = 0; i< roots.size(); i++){
-            rootStr = rootStr + ", " + (roots.get(i)).toString();
+        StringBuilder rootStr = new StringBuilder();
+        for (Object root1 : roots) {
+            rootStr.append(", ").append(root1.toString());
         }
-        keyRoot.setText(rootStr);
+        keyRoot.setText(rootStr.toString());
     }
     private BigInteger convertToBigInteger(String val){
         return new BigInteger(val,10);

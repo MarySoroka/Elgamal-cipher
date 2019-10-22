@@ -3,7 +3,7 @@ import java.util.*;
 
 public class MathCalculations {
 
-   public BigInteger calculateY(BigInteger x,BigInteger g, BigInteger p){
+   BigInteger calculateY(BigInteger x, BigInteger g, BigInteger p){
        return power(g,x,p);
    }
 
@@ -27,7 +27,7 @@ private Set<BigInteger> defineDelivers(BigInteger key){
    }
 
 //power big integer
-    public static BigInteger power(BigInteger a, BigInteger z, BigInteger m)
+    private static BigInteger power(BigInteger a, BigInteger z, BigInteger m)
     {
         BigInteger a1 = a;
         BigInteger z1 = z;
@@ -44,7 +44,7 @@ private Set<BigInteger> defineDelivers(BigInteger key){
     }
 
 //define primitives roots for big integer
-   public List<BigInteger> getPrimitivesRoot(BigInteger key){
+List<BigInteger> getPrimitivesRoot(BigInteger key){
        List<BigInteger> primitiveRoots = new LinkedList<>();
 
        Set<BigInteger> dividers = defineDelivers(key.subtract(BigInteger.ONE));
