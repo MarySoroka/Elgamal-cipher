@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
@@ -217,7 +216,7 @@ public class mainForm extends JFrame {
                 List<BigInteger> listOfRoots = new LinkedList<>(roots.getPrimitivesRoot(convertToBigInteger(keyP.getText())));
                 showRoots(listOfRoots);
 
-                Algamal algamal = new Algamal(convertToBigInteger(keyP.getText()),convertToBigInteger(keyG.getText()),convertToBigInteger(keyX.getText()));
+                Elgamal elgamal = new Elgamal(convertToBigInteger(keyP.getText()),convertToBigInteger(keyG.getText()),convertToBigInteger(keyX.getText()));
 
 
         }

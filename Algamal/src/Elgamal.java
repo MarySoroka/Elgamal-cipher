@@ -1,6 +1,6 @@
 import java.math.BigInteger;
 
-class Algamal {
+class Elgamal {
 
 
 //class for encoder and decoder
@@ -9,7 +9,7 @@ class Algamal {
     private BigInteger y;
     private BigInteger x;
 
-    Algamal(BigInteger p, BigInteger g, BigInteger x){
+    Elgamal(BigInteger p, BigInteger g, BigInteger x){
         this.p = p;
         this.x = x;
         this.g = g;
