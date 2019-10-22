@@ -7,21 +7,23 @@ import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.LinkedList;
+import java.util.List;
 
 public class mainForm extends JFrame {
 
     //definition of components
     private  JComboBox<String> chooseCipher = new JComboBox<>();
-    private   JLabel p = new JLabel("P");
+    private   JLabel p = new JLabel("Your prime number - P");
     private JTextField keyP = new JTextField();
-    private   JLabel g = new JLabel("G");
-    private JTextField keyG = new JTextField();
-    private   JLabel x = new JLabel("X");
+    private   JLabel x = new JLabel("Private key - X");
     private JTextField keyX = new JTextField();
     private   JLabel k = new JLabel("K");
     private JTextField keyK = new JTextField();
     private   JLabel root = new JLabel("Your roots");
     private JTextField keyRoot = new JTextField();
+    private   JLabel g = new JLabel("Your selected root - G");
+    private JTextField keyG = new JTextField();
     private   JLabel nameOfFile = new JLabel("Your file");
     private JButton openFile = new JButton("Find file");
     private  JButton enc = new JButton("DO");
@@ -61,30 +63,6 @@ public class mainForm extends JFrame {
         });
         container.add(p);
         container.add(keyP);
-        g.setVerticalAlignment(JLabel.CENTER);
-        keyG.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                char c=e.getKeyChar();
-                if (!((c >= '0') && (c <= '9') || (c == KeyEvent.VK_DELETE)))
-                {
-                    getToolkit().beep();
-                    e.consume();
-                }
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-
-            }
-        });
-        container.add(g);
-        container.add(keyG);
         k.setVerticalAlignment(JLabel.CENTER);
         keyK.addKeyListener(new KeyListener() {
             @Override
@@ -156,9 +134,37 @@ public class mainForm extends JFrame {
         });
         container.add(root);
         container.add(keyRoot);
+        g.setVerticalAlignment(JLabel.CENTER);
+        keyG.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char c=e.getKeyChar();
+                if (!((c >= '0') && (c <= '9') || (c == KeyEvent.VK_DELETE)))
+                {
+                    getToolkit().beep();
+                    e.consume();
+                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
+        container.add(g);
+
+        container.add(keyG);
         container.add(nameOfFile);
         container.add(openFile);
         container.add(enc);
+        openFile.addActionListener(new OpenFile());
+
+        enc.addActionListener( new EventListener());
 
 
     }
@@ -191,13 +197,27 @@ public class mainForm extends JFrame {
                 JOptionPane.PLAIN_MESSAGE);
     }
 
+    private void showRoots(List roots){
+        String rootStr = "";
+        for (int i = 0; i< roots.size(); i++){
+            rootStr = rootStr + ", " + (roots.get(i)).toString();
+        }
+        keyRoot.setText(rootStr);
+    }
+    private BigInteger convertToBigInteger(String val){
+        return new BigInteger(val,10);
+    }
    //event class for components of main form
     class EventListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
                 String key = " ";
                 String text = " ";
+                String cipher = " ";
+                MathCalculations roots = new MathCalculations();
+                List<BigInteger> listOfRoots = new LinkedList<>(roots.getPrimitivesRoot(convertToBigInteger(keyP.getText())));
+                showRoots(listOfRoots);
 
-
+                Algamal algamal = new Algamal(convertToBigInteger(keyP.getText()),convertToBigInteger(keyG.getText()),convertToBigInteger(keyX.getText()));
 
 
         }

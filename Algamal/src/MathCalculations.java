@@ -2,6 +2,13 @@ import java.math.BigInteger;
 import java.util.*;
 
 public class MathCalculations {
+
+   public BigInteger calculateY(BigInteger x,BigInteger g, BigInteger p){
+       return power(g,x,p);
+   }
+
+
+
 //define is it prime number
    public boolean isPrime(int len, String key){
        BigInteger bigKey = new BigInteger(key, 10);
@@ -20,7 +27,7 @@ private Set<BigInteger> defineDelivers(BigInteger key){
    }
 
 //power big integer
-    private static BigInteger power(BigInteger a, BigInteger z, BigInteger m)
+    public static BigInteger power(BigInteger a, BigInteger z, BigInteger m)
     {
         BigInteger a1 = a;
         BigInteger z1 = z;
