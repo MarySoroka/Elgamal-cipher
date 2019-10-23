@@ -1,7 +1,7 @@
 import java.awt.event.MouseAdapter;
 import java.math.BigInteger;
 
-public class Algamal {
+public class Elgamal {
 //class for encoder and decoder
      private  BigInteger k;
      private BigInteger privateKey;
