@@ -40,13 +40,14 @@ class Elgamal {
     public List<BigInteger> decrypt(List<BigInteger> ciphertext,BigInteger p, BigInteger x) {
         List<BigInteger> plaintext = new LinkedList<>();
 
-        for(int i = 0; i < (ciphertext.size()/2) ; i += 2) {
+        for (int i = 0; i < (ciphertext.size() / 2); i += 2) {
             BigInteger a = ciphertext.get(i);
             BigInteger b = ciphertext.get(i + 1);
-            plaintext.add(( b.multiply(MathCalculations.power( b * MathCalculations.power(MathCalculations.power(a,x, p),
-                    BigInteger(MathCalculations.ElerFunc(p.intValue())-1), p) % p);
+            BigInteger timimg = b.multiply(MathCalculations.power(MathCalculations.power(a, x, p),
+                    BigInteger.valueOf(MathCalculations.ElerFunc(p.intValue()) - 1), p));
+            plaintext.add(timimg.mod(p));
         }
         return plaintext;
 
-
+    }
 }
