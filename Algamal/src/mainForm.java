@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
@@ -203,6 +204,13 @@ public class mainForm extends JFrame {
         }
         keyRoot.setText(rootStr.toString());
     }
+    private String bigToStr (List<BigInteger> list){
+       String str = " ";
+       for(BigInteger num : list){
+           str = str + num.toString(10);
+       }
+       return str;
+    }
     private BigInteger convertToBigInteger(String val){
         return new BigInteger(val,10);
     }
@@ -216,7 +224,12 @@ public class mainForm extends JFrame {
                 List<BigInteger> listOfRoots = new LinkedList<>(roots.getPrimitivesRoot(convertToBigInteger(keyP.getText())));
                 showRoots(listOfRoots);
 
-                Elgamal elgamal = new Elgamal(convertToBigInteger(keyP.getText()),convertToBigInteger(keyG.getText()),convertToBigInteger(keyX.getText()));
+            try {
+                Elgamal elgamal = new Elgamal();
+                showResult(bigToStr(elgamal.encElgamal(convertToBigInteger(keyP.getText()),convertToBigInteger(keyG.getText()),convertToBigInteger(keyX.getText()),nameOfFile.getText())), "encode");
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
 
 
         }
