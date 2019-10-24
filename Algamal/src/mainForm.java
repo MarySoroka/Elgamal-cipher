@@ -16,12 +16,14 @@ public class mainForm extends JFrame {
     private  JComboBox<String> chooseCipher = new JComboBox<>();
     private   JLabel p = new JLabel("Your prime number - P");
     private JTextField keyP = new JTextField();
+    private JButton generateRoots = new JButton("Generate roots");
+    private   JLabel root = new JLabel("Your roots");
+    private JTextField keyRoot = new JTextField();
     private   JLabel x = new JLabel("Private key - X");
     private JTextField keyX = new JTextField();
     private   JLabel k = new JLabel("K");
     private JTextField keyK = new JTextField();
-    private   JLabel root = new JLabel("Your roots");
-    private JTextField keyRoot = new JTextField();
+
     private   JLabel g = new JLabel("Your selected root - G");
     private JTextField keyG = new JTextField();
     private   JLabel nameOfFile = new JLabel("Your file");
@@ -63,6 +65,57 @@ public class mainForm extends JFrame {
         });
         container.add(p);
         container.add(keyP);
+        root.setVerticalAlignment(JLabel.CENTER);
+        keyRoot.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char c=e.getKeyChar();
+                if (!((c >= '0') && (c <= '9') || (c == ' ') || (c == KeyEvent.VK_BACK_SPACE) || (c == KeyEvent.VK_DELETE)))
+                {
+                    getToolkit().beep();
+                    e.consume();
+                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
+        container.add(root);
+        container.add(keyRoot);
+        container.add(generateRoots);
+        generateRoots.addActionListener(new GenerateRoots());
+        g.setVerticalAlignment(JLabel.CENTER);
+        keyG.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char c=e.getKeyChar();
+                if (!((c >= '0') && (c <= '9') || (c == KeyEvent.VK_DELETE)))
+                {
+                    getToolkit().beep();
+                    e.consume();
+                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
+        container.add(g);
+
+        container.add(keyG);
         k.setVerticalAlignment(JLabel.CENTER);
         keyK.addKeyListener(new KeyListener() {
             @Override
@@ -110,55 +163,9 @@ public class mainForm extends JFrame {
         });
         container.add(x);
         container.add(keyX);
-        root.setVerticalAlignment(JLabel.CENTER);
-        keyRoot.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                char c=e.getKeyChar();
-                if (!((c >= '0') && (c <= '9') || (c == ' ') || (c == KeyEvent.VK_BACK_SPACE) || (c == KeyEvent.VK_DELETE)))
-                {
-                    getToolkit().beep();
-                    e.consume();
-                }
-            }
 
-            @Override
-            public void keyPressed(KeyEvent e) {
 
-            }
 
-            @Override
-            public void keyReleased(KeyEvent e) {
-
-            }
-        });
-        container.add(root);
-        container.add(keyRoot);
-        g.setVerticalAlignment(JLabel.CENTER);
-        keyG.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                char c=e.getKeyChar();
-                if (!((c >= '0') && (c <= '9') || (c == KeyEvent.VK_DELETE)))
-                {
-                    getToolkit().beep();
-                    e.consume();
-                }
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-
-            }
-        });
-        container.add(g);
-
-        container.add(keyG);
         container.add(nameOfFile);
         container.add(openFile);
         container.add(enc);
@@ -182,7 +189,15 @@ public class mainForm extends JFrame {
 
         }
     }
-
+    // listener of opening file
+    class  GenerateRoots implements ActionListener {
+        public void actionPerformed(ActionEvent e){
+            PrimitiveRoots roots = new PrimitiveRoots();
+           // List<Integer> listOfRoots = new LinkedList<>();
+           int  listOfRoots = roots.findPrimitive(Integer.parseInt(keyP.getText()));
+            showRoots(listOfRoots);
+        }
+    }
     //output of 15  bytes
     private String output(String str) {
         if (str.length() >= 15*8) {
@@ -197,12 +212,12 @@ public class mainForm extends JFrame {
                 JOptionPane.PLAIN_MESSAGE);
     }
 
-    private void showRoots(List roots){
-        StringBuilder rootStr = new StringBuilder();
-        for (Object root1 : roots) {
-            rootStr.append(", ").append(root1.toString());
-        }
-        keyRoot.setText(rootStr.toString());
+    private void showRoots(int roots){
+       // StringBuilder rootStr = new StringBuilder();
+     //   for (Object root1 : roots) {
+       //     rootStr.append(", ").append(root1.toString());
+        //}
+        keyRoot.setText(Integer.toString(roots));
     }
     private String bigToStr (List<BigInteger> list){
        String str = " ";
@@ -220,9 +235,7 @@ public class mainForm extends JFrame {
                 String key = " ";
                 String text = " ";
                 String cipher = " ";
-                MathCalculations roots = new MathCalculations();
-                List<BigInteger> listOfRoots = new LinkedList<>(roots.getPrimitivesRoot(convertToBigInteger(keyP.getText())));
-                showRoots(listOfRoots);
+
 
             try {
                 Elgamal elgamal = new Elgamal();

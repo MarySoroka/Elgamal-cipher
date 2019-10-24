@@ -44,7 +44,7 @@ class Elgamal {
             BigInteger a = ciphertext.get(i);
             BigInteger b = ciphertext.get(i + 1);
             BigInteger timimg = b.multiply(MathCalculations.power(MathCalculations.power(a, x, p),
-                    BigInteger.valueOf(MathCalculations.ElerFunc(p.intValue()) - 1), p));
+                    MathCalculations.ElerFunc(p).subtract(BigInteger.ONE), p));
             plaintext.add(timimg.mod(p));
         }
         return plaintext;
