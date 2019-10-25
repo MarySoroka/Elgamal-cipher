@@ -9,9 +9,10 @@ public class readWriteFile {
         FileInputStream file = new FileInputStream(fileName);
         List<BigInteger> text = new LinkedList<>();
         byte[] inpText = file.readAllBytes();
-
+        BigInteger someCharecter;
         for (int i =0; i <inpText.length; i++){
-            text.add(BigInteger.valueOf((long)inpText[i]));
+            someCharecter = BigInteger.valueOf((long)inpText[i]);
+            text.add(someCharecter);
         }
         return text;
     }

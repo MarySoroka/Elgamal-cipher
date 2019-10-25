@@ -17,10 +17,15 @@ class Elgamal {
     }
     private List<BigInteger> encryption(List<BigInteger> plaintext, BigInteger p, BigInteger k, BigInteger y, BigInteger g) {
         List<BigInteger> ciphertext = new LinkedList<>();
-        for(int i = 0; i < (plaintext.size()*2); i += 2) {
+        BigInteger promezutok;
+        for(int i = 0; i < (plaintext.size()); i += 1) {
             BigInteger num = plaintext.get(i);
-            ciphertext.add(GetListOfRoots.power(g,k,p));
-            ciphertext.add((( (GetListOfRoots.power(y,k,p)).multiply((plaintext.get(i/2))).mod(p)))); // b
+            promezutok = GetListOfRoots.power(g,k,p);
+            ciphertext.add(promezutok);
+            promezutok = GetListOfRoots.power(y,k,p);
+            promezutok = promezutok.multiply(plaintext.get(i));
+            promezutok = promezutok.mod(p);
+            ciphertext.add(promezutok); // b
         }
         return ciphertext;
     }
