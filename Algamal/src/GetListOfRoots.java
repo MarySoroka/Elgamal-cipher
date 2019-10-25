@@ -51,11 +51,6 @@ public class GetListOfRoots {
         return x;
     }
 
-    /**
-     * Check for prime numbers
-     * @param x number
-     * @return true if number prime
-     */
     public static Boolean isPrime(long x) {
         for(long i=2;i<=Math.sqrt(x);i++)
             if(x%i==0)
@@ -63,12 +58,7 @@ public class GetListOfRoots {
         return true;
     }
 
-    /**
-     * Calculate greatest common divisor
-     * @param a first number
-     * @param b second number
-     * @return greatest common divisor of a and b
-     */
+
     public static long gcd(long a, long b){
         if(b==0)
             return a;
@@ -127,11 +117,7 @@ public class GetListOfRoots {
         return primitiveRoots;
     }
 
-    /**
-     * Euler function calculation
-     * @param n number
-     * @return Euler function from n
-     */
+
     public static int phi (int n) {
         int result = n;
         for (int i=2; i*i<=n; ++i)
