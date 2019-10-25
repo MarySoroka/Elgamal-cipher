@@ -214,6 +214,8 @@ public class mainForm extends JFrame {
     private BigInteger convertToBigInteger(String val){
         return new BigInteger(val,10);
     }
+
+
    //event class for components of main form
     class EventListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {

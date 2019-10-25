@@ -6,18 +6,9 @@ import java.util.List;
 class Elgamal {
 
 
-//class for encoder and decoder
-    private BigInteger p;
-    private BigInteger g;
-    private BigInteger y;
-    private BigInteger x;
-
     List<BigInteger> encElgamal(BigInteger p, BigInteger g, BigInteger x,String name) throws IOException {
-        this.p = p;
-        this.x = x;
-        this.g = g;
         MathCalculations newY = new MathCalculations();
-        this.y = newY.calculateY(x,g,p);
+        BigInteger y = newY.calculateY(x,g,p);
         readWriteFile file = new readWriteFile();
         List<BigInteger> text = new LinkedList<BigInteger>(file.readFromFile(name));
         List<BigInteger> cipher = encryption(text, p, x,y,g);
