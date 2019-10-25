@@ -13,7 +13,6 @@ import java.util.List;
 public class mainForm extends JFrame {
 
     //definition of components
-    private  JComboBox<String> chooseCipher = new JComboBox<>();
     private   JLabel p = new JLabel("Your prime number - P");
     private JTextField keyP = new JTextField();
     private JButton generateRoots = new JButton("Generate roots");
@@ -23,7 +22,7 @@ public class mainForm extends JFrame {
     private JTextField keyX = new JTextField();
     private   JLabel k = new JLabel("K");
     private JTextField keyK = new JTextField();
-
+    private JScrollPane scroll = new JScrollPane(keyRoot);
     private   JLabel g = new JLabel("Your selected root - G");
     private JTextField keyG = new JTextField();
     private   JLabel nameOfFile = new JLabel("Your file");
@@ -39,7 +38,7 @@ public class mainForm extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Container container = this.getContentPane();
-        container.setLayout(new GridLayout(20, 1));
+        container.setLayout(new GridLayout(20, 40));
         p.setVerticalAlignment(JLabel.CENTER);
         keyP.addKeyListener(new KeyListener() {
             // limit for input
@@ -192,9 +191,9 @@ public class mainForm extends JFrame {
     // listener of opening file
     class  GenerateRoots implements ActionListener {
         public void actionPerformed(ActionEvent e){
-            PrimitiveRoots roots = new PrimitiveRoots();
+            GetListOfRoots roots = new GetListOfRoots();
            // List<Integer> listOfRoots = new LinkedList<>();
-           int  listOfRoots = roots.findPrimitive(Integer.parseInt(keyP.getText()));
+           List<BigInteger>  listOfRoots = roots.getPrimitiveRoots(new BigInteger(keyP.getText()));
             showRoots(listOfRoots);
         }
     }
@@ -212,12 +211,18 @@ public class mainForm extends JFrame {
                 JOptionPane.PLAIN_MESSAGE);
     }
 
-    private void showRoots(int roots){
-       // StringBuilder rootStr = new StringBuilder();
-     //   for (Object root1 : roots) {
-       //     rootStr.append(", ").append(root1.toString());
-        //}
-        keyRoot.setText(Integer.toString(roots));
+    private void showRoots(List roots){
+        StringBuilder rootStr = new StringBuilder();
+        int i =1;
+        for (Object root1 : roots) {
+            if (i ==1 ){
+                rootStr.append(root1.toString());
+            }else {
+                rootStr.append(", ").append(root1.toString());
+            }
+            i++;
+        }
+        keyRoot.setText(String.valueOf(rootStr));
     }
     private String bigToStr (List<BigInteger> list){
        String str = " ";
