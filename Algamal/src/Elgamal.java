@@ -6,14 +6,37 @@ import java.util.List;
 class Elgamal {
 
 
-    List<BigInteger> encElgamal(BigInteger p, BigInteger g, BigInteger x,String name) throws IOException {
+    String[] encElgamal(BigInteger p, BigInteger g, BigInteger x, BigInteger k , String name, int type) throws IOException {
+
         GetListOfRoots newY = new GetListOfRoots();
         BigInteger y = newY.calculateY(x,g,p);
         readWriteFile file = new readWriteFile();
         List<BigInteger> text = new LinkedList<BigInteger>(file.readFromFile(name));
-        List<BigInteger> cipher = encryption(text, p, x,y,g);
-        file.WriteInFile(name,cipher);
-        return cipher;
+        List<BigInteger> cipher;
+        String s;
+        if (type == 0){
+            cipher = encryption(text, p,k,y,g);
+            s = ".encode";
+        }else{
+            cipher = decrypt(text, p,x);
+            s = ".decode";
+        }
+        file.WriteInFile(name+s,cipher);
+        return new String[]{bigToStr(text),bigToStr(covertToList(p,g,y)), bigToStr(cipher)};
+    }
+    private String bigToStr (List<BigInteger> list){
+        String str = " ";
+        for(BigInteger num : list){
+            str = str + " " + num.toString(10);
+        }
+        return str;
+    }
+    private List<BigInteger> covertToList(BigInteger p,BigInteger g,BigInteger y){
+        List<BigInteger> publicKey =new LinkedList<>();
+        publicKey.add(p);
+        publicKey.add(g);
+        publicKey.add(y);
+        return publicKey;
     }
     private List<BigInteger> encryption(List<BigInteger> plaintext, BigInteger p, BigInteger k, BigInteger y, BigInteger g) {
         List<BigInteger> ciphertext = new LinkedList<>();
@@ -22,7 +45,7 @@ class Elgamal {
             BigInteger num = plaintext.get(i);
             promezutok = GetListOfRoots.power(g,k,p);
             ciphertext.add(promezutok);
-            promezutok = GetListOfRoots.power(y,k,p);
+            promezutok = y.pow(k.intValue());
             promezutok = promezutok.multiply(plaintext.get(i));
             promezutok = promezutok.mod(p);
             ciphertext.add(promezutok); // b

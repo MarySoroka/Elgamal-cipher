@@ -59,11 +59,6 @@ public class GetListOfRoots {
     }
 
 
-    public static long gcd(long a, long b){
-        if(b==0)
-            return a;
-        return gcd(b, a%b);
-    }
 
 
     private static Set<BigInteger> getDividers(BigInteger n) {
@@ -82,7 +77,7 @@ public class GetListOfRoots {
         return divies;
     }
 
-    List<BigInteger> getPrimitiveRoots(BigInteger p) {
+    static List<BigInteger> getPrimitiveRoots(BigInteger p) {
         List<BigInteger> primitiveRoots = new LinkedList<>();
 
         Set<BigInteger> divies = getDividers(p.subtract(BigInteger.ONE));
