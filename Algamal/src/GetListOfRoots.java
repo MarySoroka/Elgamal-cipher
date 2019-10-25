@@ -5,7 +5,33 @@ import java.util.List;
 import java.util.Set;
 
 public class GetListOfRoots {
-    private static BigInteger power(BigInteger a, BigInteger z, BigInteger m)
+    BigInteger calculateY(BigInteger x, BigInteger g, BigInteger p){
+        return power(g,x,p);
+    }
+
+    public static BigInteger ElerFunc (BigInteger n) {
+        BigInteger result = n;
+        BigInteger num = BigInteger.TWO;
+        BigInteger num1;
+        BigInteger num2;
+        for (BigInteger i = BigInteger.TWO; num.compareTo(n) < 0;i = i.add(BigInteger.ONE)) {
+            num1 = n.mod(i);
+            while (num1.equals(BigInteger.ZERO)){
+                n = n.divide(i);
+                num1 = n.mod(i);
+            }
+            num2 = result.divide(i);
+            result = result.subtract(num2);
+            num = i.multiply(i);
+        }
+        if (n.compareTo(BigInteger.ONE)>0){
+            num2 = result.divide(n);
+            result = result.subtract(num2);
+        }
+        return result;
+    }
+
+     static BigInteger power(BigInteger a, BigInteger z, BigInteger m)
     {
         BigInteger a1 = a;
         BigInteger z1 = z;

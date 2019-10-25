@@ -7,7 +7,7 @@ class Elgamal {
 
 
     List<BigInteger> encElgamal(BigInteger p, BigInteger g, BigInteger x,String name) throws IOException {
-        MathCalculations newY = new MathCalculations();
+        GetListOfRoots newY = new GetListOfRoots();
         BigInteger y = newY.calculateY(x,g,p);
         readWriteFile file = new readWriteFile();
         List<BigInteger> text = new LinkedList<BigInteger>(file.readFromFile(name));
@@ -19,8 +19,8 @@ class Elgamal {
         List<BigInteger> ciphertext = new LinkedList<>();
         for(int i = 0; i < (plaintext.size()*2); i += 2) {
             BigInteger num = plaintext.get(i);
-            ciphertext.add(MathCalculations.power(g,k,p));
-            ciphertext.add((( (MathCalculations.power(y,k,p)).multiply((plaintext.get(i/2))).mod(p)))); // b
+            ciphertext.add(GetListOfRoots.power(g,k,p));
+            ciphertext.add((( (GetListOfRoots.power(y,k,p)).multiply((plaintext.get(i/2))).mod(p)))); // b
         }
         return ciphertext;
     }
@@ -34,8 +34,8 @@ class Elgamal {
         for (int i = 0; i < (ciphertext.size() / 2); i += 2) {
             BigInteger a = ciphertext.get(i);
             BigInteger b = ciphertext.get(i + 1);
-            BigInteger timimg = b.multiply(MathCalculations.power(MathCalculations.power(a, x, p),
-                    MathCalculations.ElerFunc(p).subtract(BigInteger.ONE), p));
+            BigInteger timimg = b.multiply(GetListOfRoots.power(GetListOfRoots.power(a, x, p),
+                    GetListOfRoots.ElerFunc(p).subtract(BigInteger.ONE), p));
             plaintext.add(timimg.mod(p));
         }
         return plaintext;
