@@ -16,12 +16,16 @@ public class MathCalculations {
    }
 
 //define prime dividers for big integer number
-private Set<BigInteger> defineDelivers(BigInteger key){
-       Set<BigInteger> dividers = new HashSet<>();
-       BigInteger div  = new BigInteger("2");
-       while (div.compareTo(key) != 0) {
+private List<BigInteger> defineDelivers(BigInteger key){
+       List<BigInteger> dividers = new LinkedList<>();
+       BigInteger div  = new BigInteger("1");
+       BigInteger num;
+       while (div.compareTo(key) == -1) {
            div = div.nextProbablePrime();
-           dividers.add(div);
+           num = (key.mod(div));
+           if (num.compareTo(BigInteger.ZERO) == 0) {
+               dividers.add(div);
+           }
        }
        return dividers;
    }
@@ -44,40 +48,58 @@ private Set<BigInteger> defineDelivers(BigInteger key){
     }
 
 //define primitives roots for big integer
-List<BigInteger> getPrimitivesRoot(BigInteger key){
-       List<BigInteger> primitiveRoots = new LinkedList<>();
+public  List<BigInteger> getPrimitiveRoots(BigInteger p) {
+    List<BigInteger> primitiveRoots = new LinkedList<>();
 
-       Set<BigInteger> dividers = defineDelivers(key.subtract(BigInteger.ONE));
+    List<BigInteger> divies = defineDelivers(p.subtract(BigInteger.ONE));
+    BigInteger num;
+    int size1;
+    BigInteger div1;
+    boolean flag;
+    for(BigInteger i = BigInteger.TWO; i.compareTo(p) < 0; i = i.add(BigInteger.ONE)) {
+        flag = true;
+        size1 = divies.size();
+        for (int div = 0; div< size1; div++) {
 
-       boolean flag;
-       BigInteger i = BigInteger.TWO;
-       while (i.compareTo(key) != 0) {
-           flag = true;
-           for (BigInteger div : dividers) {
-               if( (power(i, ((key.subtract(BigInteger.ONE))).divide(div), key)).compareTo(BigInteger.ONE) == 0) {
-                   flag = false;
-                   break;
-               }
-           }
+            num = p.subtract(BigInteger.ONE);
+            div1 = divies.get(div);
+            num =  num.divide(div1);
+            int num1 = num.intValue();
+            num = num.pow(num1);
+            num = num.mod(p);
 
-           if(flag) {
-               primitiveRoots.add(i);
-           }
-       }
-
-       return primitiveRoots;
-   }
-
-    public static int ElerFunc (int n) {
-        int result = n;
-        for (int i=2; i*i<=n; ++i)
-            if (n % i == 0) {
-                while (n % i == 0)
-                    n /= i;
-                result -= result / i;
+           if(num.equals(BigInteger.ONE)) {
+                flag = false;
             }
-        if (n > 1)
-            result -= result / n;
+        }
+
+        if(flag) {
+            primitiveRoots.add(i);
+        }
+    }
+
+    return primitiveRoots;
+}
+
+    public static BigInteger ElerFunc (BigInteger n) {
+        BigInteger result = n;
+        BigInteger num = BigInteger.TWO;
+        BigInteger num1;
+        BigInteger num2;
+        for (BigInteger i = BigInteger.TWO; num.compareTo(n) < 0;i = i.add(BigInteger.ONE)) {
+            num1 = n.mod(i);
+            while (num1.equals(BigInteger.ZERO)){
+                n = n.divide(i);
+                num1 = n.mod(i);
+            }
+            num2 = result.divide(i);
+            result = result.subtract(num2);
+            num = i.multiply(i);
+        }
+        if (n.compareTo(BigInteger.ONE)>0){
+            num2 = result.divide(n);
+            result = result.subtract(num2);
+        }
         return result;
     }
 }
