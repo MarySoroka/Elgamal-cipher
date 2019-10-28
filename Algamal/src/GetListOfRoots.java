@@ -44,7 +44,9 @@ public class GetListOfRoots {
                 a1 = num1.mod(m);
                 num = z1.mod(BigInteger.TWO);
             }
-            z1 = z1.subtract(BigInteger.ONE);
+
+                z1 = z1.subtract(BigInteger.ONE);
+
             BigInteger num2 = x.multiply(a1);
             x = num2.mod(m);
         }

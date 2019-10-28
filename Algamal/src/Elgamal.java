@@ -59,12 +59,14 @@ class Elgamal {
     public List<BigInteger> decrypt(List<BigInteger> ciphertext,BigInteger p, BigInteger x) {
         List<BigInteger> plaintext = new LinkedList<>();
 
-        for (int i = 0; i < (ciphertext.size() / 2); i += 2) {
+        for (int i = 0; i < (ciphertext.size() ); i += 2) {
             BigInteger a = ciphertext.get(i);
             BigInteger b = ciphertext.get(i + 1);
-            BigInteger timimg = b.multiply(GetListOfRoots.power(GetListOfRoots.power(a, x, p),
-                    GetListOfRoots.ElerFunc(p).subtract(BigInteger.ONE), p));
-            plaintext.add(timimg.mod(p));
+            BigInteger timimg = a.pow(x.intValue());
+            timimg = (BigInteger.ONE).divide(timimg);
+            timimg = b.multiply(timimg);
+            timimg = timimg.mod(p);
+            plaintext.add(timimg);
         }
         return plaintext;
 

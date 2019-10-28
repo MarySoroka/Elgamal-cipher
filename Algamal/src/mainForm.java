@@ -184,8 +184,8 @@ public class mainForm extends JFrame {
         public void itemStateChanged(ItemEvent e) {
 
             if (chooseAction.getSelectedIndex() == 1) {
-                keyK.setVisible(false);
-                keyG.setVisible(false);
+                keyK.setVisible(true);
+                keyG.setVisible(true);
                 keyRoot.setVisible(false);
                 k.setVisible(false);
                 root.setVisible(false);
