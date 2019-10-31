@@ -1,5 +1,8 @@
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -61,10 +64,11 @@ class Elgamal {
         for (int i = 0; i < (ciphertext.size() ); i += 2) {
             BigInteger a = ciphertext.get(i);
             BigInteger b = ciphertext.get(i + 1);
-            BigInteger timimg = a.pow(x.intValue());
-            timimg = (BigInteger.ONE).divide(timimg);
+            BigInteger powerValue = (p.subtract(BigInteger.ONE)).subtract(x);
+            BigInteger timimg = a.pow(powerValue.intValue());
             timimg = b.multiply(timimg);
             timimg = timimg.mod(p);
+
             plaintext.add(timimg);
         }
         return plaintext;
