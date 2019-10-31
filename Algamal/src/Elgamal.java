@@ -14,18 +14,20 @@ class Elgamal {
         GetListOfRoots newY = new GetListOfRoots();
         BigInteger y = newY.calculateY(x,g,p);
         readWriteFile file = new readWriteFile();
-        List<BigInteger> text = new LinkedList<BigInteger>(file.readFromFile(name));
+
         List<BigInteger> cipher;
         String s;
         if (type == 0){
+            List<BigInteger> text = new LinkedList<BigInteger>(file.readFromFile(name));
             cipher = encryption(text, p,k,y,g);
             s = ".encode";
             file.WriteInFile(name+s,cipher);
             return new String[]{bigToStr(text),bigToStr(covertToList(p,g,y)), bigToStr(cipher)};
         }else{
+            List<BigInteger> text = new LinkedList<BigInteger>(file.readFromFileDecrypt(name));
             cipher = decrypt(text, p,x);
             s = ".decode";
-            file.WriteInFile(name+s,cipher);
+            file.WriteInFileDecrypt(name+s,cipher);
             return new String[]{bigToStr(text),bigToStr(covertToList(p,g,y)), bigToStr(cipher)};
         }
 
@@ -61,9 +63,9 @@ class Elgamal {
     public List<BigInteger> decrypt(List<BigInteger> ciphertext,BigInteger p, BigInteger x) {
         List<BigInteger> plaintext = new LinkedList<>();
 
-        for (int i = 0; i < (ciphertext.size() ); i += 2) {
-            BigInteger a = ciphertext.get(i);
-            BigInteger b = ciphertext.get(i + 1);
+        for (int i = 0; i < (ciphertext.size()-1 ); i += 2) {
+            BigInteger a = (ciphertext.get(i)).abs();
+            BigInteger b = (ciphertext.get(i + 1)).abs();
             BigInteger powerValue = (p.subtract(BigInteger.ONE)).subtract(x);
             BigInteger timimg = a.pow(powerValue.intValue());
             timimg = b.multiply(timimg);
