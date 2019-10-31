@@ -17,12 +17,15 @@ class Elgamal {
         if (type == 0){
             cipher = encryption(text, p,k,y,g);
             s = ".encode";
+            file.WriteInFile(name+s,cipher);
+            return new String[]{bigToStr(text),bigToStr(covertToList(p,g,y)), bigToStr(cipher)};
         }else{
             cipher = decrypt(text, p,x);
             s = ".decode";
+            file.WriteInFile(name+s,cipher);
+            return new String[]{bigToStr(text),bigToStr(covertToList(p,g,y)), bigToStr(cipher)};
         }
-        file.WriteInFile(name+s,cipher);
-        return new String[]{bigToStr(text),bigToStr(covertToList(p,g,y)), bigToStr(cipher)};
+
     }
     private String bigToStr (List<BigInteger> list){
         String str = " ";
@@ -52,10 +55,6 @@ class Elgamal {
         }
         return ciphertext;
     }
-
-
-
-
     public List<BigInteger> decrypt(List<BigInteger> ciphertext,BigInteger p, BigInteger x) {
         List<BigInteger> plaintext = new LinkedList<>();
 
@@ -71,4 +70,9 @@ class Elgamal {
         return plaintext;
 
     }
+
+
+
+
+
 }

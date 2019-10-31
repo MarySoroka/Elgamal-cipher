@@ -184,8 +184,8 @@ public class mainForm extends JFrame {
         public void itemStateChanged(ItemEvent e) {
 
             if (chooseAction.getSelectedIndex() == 1) {
-                keyK.setVisible(true);
-                keyG.setVisible(true);
+                keyK.setVisible(false);
+                keyG.setVisible(false);
                 keyRoot.setVisible(false);
                 k.setVisible(false);
                 root.setVisible(false);
@@ -226,7 +226,7 @@ public class mainForm extends JFrame {
             if(!p.isProbablePrime(p.intValue())) {
                 showResult("Value must be prime", "ERROR");
             }else{
-           List<BigInteger>  listOfRoots = roots.getPrimitiveRoots(new BigInteger(keyP.getText()));
+           List<BigInteger>  listOfRoots = GetListOfRoots.getPrimitiveRoots(new BigInteger(keyP.getText()));
             showRoots(listOfRoots);}
         }
     }
@@ -267,49 +267,64 @@ public class mainForm extends JFrame {
     class EventListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
                 String[] result;
-            BigInteger p = new BigInteger(keyP.getText());
-            BigInteger k = new BigInteger(keyK.getText());
-            BigInteger g = new BigInteger(keyG.getText());
-            BigInteger x = new BigInteger(keyX.getText());
-            boolean exeption = true;
-            if(!p.isProbablePrime(p.intValue())) {
-                showResult("Incorrect number P (It should be prime)", "ERROR");
-                exeption = false;
-            }else{
-
-            if((x.compareTo(p.subtract(BigInteger.ONE))>= 0 ) || (x.compareTo(BigInteger.ONE) <= 0)) {
-                showResult("Incorrect number X. (Need: 1 < x < p - 1)", "ERROR");
-                exeption = false;
-            }else{
-            if((k.compareTo(p.subtract(BigInteger.ONE)) >= 0) || (k.compareTo(BigInteger.ONE) <=0 )) {
-                showResult("Incorrect number K. (Need: 1 < k < p - 1)", "ERROR");
-                exeption = false;
-            }else{
-            BigInteger num = p.subtract(BigInteger.ONE);
-            if(!num.gcd(k).equals(BigInteger.ONE)) {
-                showResult("Incorrect number K. (Need: gcd(p-1, k) == 1)", "ERROR");
-                exeption = false;
-            }else{
-            List<BigInteger> primitiveRoots = GetListOfRoots.getPrimitiveRoots(p);
-            if(!primitiveRoots.contains(g)) {
-                showResult("G is not a primitive root of p", "ERROR");
-                exeption = false;
-            }}}}}
-            if (exeption){
             try {
                 switch (chooseAction.getSelectedIndex()){
                     case 0: {
+                        BigInteger p = new BigInteger(keyP.getText());
+                        BigInteger k = new BigInteger(keyK.getText());
+                        BigInteger g = new BigInteger(keyG.getText());
+                        BigInteger x = new BigInteger(keyX.getText());
+                        boolean exeption = true;
+                        if(!p.isProbablePrime(p.intValue())) {
+                            showResult("Incorrect number P (It should be prime)", "ERROR");
+                            exeption = false;
+                        }else{
+
+                        if((x.compareTo(p.subtract(BigInteger.ONE))>= 0 ) || (x.compareTo(BigInteger.ONE) <= 0)) {
+                            showResult("Incorrect number X. (Need: 1 < x < p - 1)", "ERROR");
+                            exeption = false;
+                        }else{
+                        if((k.compareTo(p.subtract(BigInteger.ONE)) >= 0) || (k.compareTo(BigInteger.ONE) <=0 )) {
+                            showResult("Incorrect number K. (Need: 1 < k < p - 1)", "ERROR");
+                            exeption = false;
+                        }else{
+                        BigInteger num = p.subtract(BigInteger.ONE);
+                        if(!num.gcd(k).equals(BigInteger.ONE)) {
+                            showResult("Incorrect number K. (Need: gcd(p-1, k) == 1)", "ERROR");
+                            exeption = false;
+                        }else{
+                        List<BigInteger> primitiveRoots = GetListOfRoots.getPrimitiveRoots(p);
+                        if(!primitiveRoots.contains(g)) {
+                            showResult("G is not a primitive root of p", "ERROR");
+                            exeption = false;
+                        }}}}}
+                        if (exeption){
+
                         Elgamal elgamal = new Elgamal();
                         result = ((elgamal.encElgamal(convertToBigInteger(keyP.getText()), convertToBigInteger(keyG.getText()), convertToBigInteger(keyX.getText()), convertToBigInteger(keyK.getText()), nameOfFile.getText(), 0)));
                         showResult(String.format("\nKey: %s\nSrc: %s\nFile: %s",
                                 output(result[1]), output(result[0]), output(result[2])), "Encode");
-                    }break;
+                        }}break;
                     case 1:{
-                        Elgamal elgamal = new Elgamal();
-                        result =((elgamal.encElgamal(convertToBigInteger(keyP.getText()), convertToBigInteger(keyG.getText()), convertToBigInteger(keyX.getText()), convertToBigInteger(keyK.getText()), nameOfFile.getText(), 1)));
-                        showResult(String.format("\nKey: %s\nSrc: %s\nFile: %s",
-                                output(result[1]), output(result[0]), output(result[2])), "Decode");
-                    }break;
+                        BigInteger p = new BigInteger(keyP.getText());
+                        BigInteger x = new BigInteger(keyX.getText());
+                        boolean exeption = true;
+                        if(!p.isProbablePrime(p.intValue())) {
+                            showResult("Incorrect number P (It should be prime)", "ERROR");
+                            exeption = false;
+                        }else{
+
+                            if((x.compareTo(p.subtract(BigInteger.ONE))>= 0 ) || (x.compareTo(BigInteger.ONE) <= 0)) {
+                                showResult("Incorrect number X. (Need: 1 < x < p - 1)", "ERROR");
+                                exeption = false;
+                            }else{
+                                if (exeption) {
+
+                                    Elgamal elgamal = new Elgamal();
+                                    result = ((elgamal.encElgamal(convertToBigInteger(keyP.getText()), convertToBigInteger("0"), convertToBigInteger(keyX.getText()), convertToBigInteger("0"), nameOfFile.getText(), 1)));
+                                    showResult(String.format("\nKey: %s\nSrc: %s\nFile: %s",
+                                            output(result[1]), output(result[0]), output(result[2])), "Decode");
+                                }}}}break;
                     }
 
         }
@@ -320,7 +335,7 @@ public class mainForm extends JFrame {
                 showResult("Invalid register", "ERROR");
                 ex.printStackTrace();
             }}
-        }}
+        }
     //main function for creation of main form
     public static void main(String[] args) {
         mainForm app = new mainForm();
