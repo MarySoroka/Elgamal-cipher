@@ -19,6 +19,7 @@ public class readWriteFile {
     }
     void WriteInFile (String fileName,List<BigInteger> cipherText) throws IOException {
         FileOutputStream file = new FileOutputStream(fileName);
+        List<BigInteger> text = new LinkedList<>();
         int[] l = new int[cipherText.size()*2];
         int i = 0;
         for (BigInteger bigInteger : cipherText) {
@@ -27,9 +28,12 @@ public class readWriteFile {
                 l[i] = 0;
                 BigInteger num = new BigInteger(String.valueOf(l[i]));
                 file.write(num.toByteArray());
+                text.add(num);
                 l[i+1] = bigInteger.intValue();
                 num = new BigInteger(String.valueOf(l[i+1]));
+
                 file.write(num.toByteArray());
+                text.add(num);
                 i +=2;
 
             }else{
@@ -60,6 +64,10 @@ public class readWriteFile {
         for (int i =0; i <inpText.length-1; i += 2){
             num[0] = inpText[i];
             num[1] = inpText[i+1];
+            if ((num[0] == 0) && (num[1]==0)){
+                num[1] = inpText[i+2];
+                i++;
+            }
             someCharecter = new BigInteger(num);
             text.add(someCharecter);
         }
