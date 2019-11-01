@@ -27,8 +27,8 @@ public class readWriteFile {
                 l[i] = 0;
                 BigInteger num = new BigInteger(String.valueOf(l[i]));
                 file.write(num.toByteArray());
-                l[i] = bigInteger.intValue();
-                num = new BigInteger(String.valueOf(l[i]));
+                l[i+1] = bigInteger.intValue();
+                num = new BigInteger(String.valueOf(l[i+1]));
                 file.write(num.toByteArray());
                 i +=2;
 
