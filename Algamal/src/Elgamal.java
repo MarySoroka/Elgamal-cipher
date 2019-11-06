@@ -1,80 +1,89 @@
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.LinkedList;
 import java.util.List;
 
 class Elgamal {
 
 
-    String[] encElgamal(BigInteger p, BigInteger g, BigInteger x, BigInteger k , String name, int type) throws IOException {
+    String[] encElgamal(long p, long g, long x, long k , String name, int type) throws IOException {
 
         GetListOfRoots newY = new GetListOfRoots();
-        BigInteger y = newY.calculateY(x,g,p);
+        Long y = newY.calculateY(x,g,p);
         readWriteFile file = new readWriteFile();
 
-        List<BigInteger> cipher;
+        int[] cipher;
+        byte[] decipher;
         String s;
         if (type == 0){
-            List<BigInteger> text = new LinkedList<BigInteger>(file.readFromFile(name));
+            byte[] text = file.readFromFile(name);
             cipher = encryption(text, p,k,y,g);
             s = ".encode";
             file.WriteInFile(name+s,cipher);
-            return new String[]{bigToStr(text),bigToStr(covertToList(p,g,y)), bigToStr(cipher)};
+            return new String[]{textToStrForByte(text),keyToStr(covertToList(p,g,y)), textToStrForInt(cipher)};
         }else{
-            List<BigInteger> text = new LinkedList<BigInteger>(file.readFromFileDecrypt(name));
-            cipher = decrypt(text, p,x);
+            int[] text = file.readFromFileDecrypt(name);
+            decipher = decrypt(text, p,x);
             s = ".decode";
-            file.WriteInFileDecrypt(name+s,cipher);
-            return new String[]{bigToStr(text),bigToStr(covertToList(p,g,y)), bigToStr(cipher)};
+            file.WriteInFileDecrypt(name+s,decipher);
+            return new String[]{textToStrForInt(text),keyToStr(covertToList(p,g,y)), textToStrForByte(decipher)};
         }
 
     }
-    private String bigToStr (List<BigInteger> list){
+
+    private String textToStrForInt (int[] list){
         String str = " ";
-        for(BigInteger num : list){
-            str = str + " " + num.toString(10);
+        for(int num : list){
+            str = str + " " + num;
         }
         return str;
     }
-    private List<BigInteger> covertToList(BigInteger p,BigInteger g,BigInteger y){
-        List<BigInteger> publicKey =new LinkedList<>();
+
+    private String textToStrForByte (byte[] list){
+        String str = " ";
+        for(byte num : list){
+            str = str + " " + unsignedToBytes(num);
+        }
+        return str;
+    }
+
+    private String keyToStr (List<Long> list){
+        String str = " ";
+        for(Long num : list){
+            str = str + " " + Long.toString(num,10);
+        }
+        return str;
+    }
+    private List<Long> covertToList(long p,long g,long y){
+        List<Long> publicKey =new LinkedList<>();
         publicKey.add(p);
         publicKey.add(g);
         publicKey.add(y);
         return publicKey;
     }
-    private List<BigInteger> encryption(List<BigInteger> plaintext, BigInteger p, BigInteger k, BigInteger y, BigInteger g) {
-        List<BigInteger> ciphertext = new LinkedList<>();
-        BigInteger promezutok;
-        for(int i = 0; i < (plaintext.size()); i += 1) {
-            BigInteger num = plaintext.get(i);
-            promezutok = GetListOfRoots.power(g,k,p);
-            ciphertext.add(promezutok);
-            promezutok = y.pow(k.intValue());
-            promezutok = promezutok.multiply(plaintext.get(i));
-            promezutok = promezutok.mod(p);
-            ciphertext.add(promezutok); // b
+
+    private int[] encryption(byte[] plaintext, long p, long k, long y, long g) {
+        int[] ciphertext = new int[2*plaintext.length];
+        for(int i = 0; i < ciphertext.length; i += 2) {
+            ciphertext[i] = (int) GetListOfRoots.power(g,k,p); // a
+            ciphertext[i + 1] = (int) ((GetListOfRoots.power(y,k,p) * unsignedToBytes(plaintext[i/2])) % p); // b
         }
         return ciphertext;
     }
-    public List<BigInteger> decrypt(List<BigInteger> ciphertext,BigInteger p, BigInteger x) {
-        List<BigInteger> plaintext = new LinkedList<>();
+    private static int unsignedToBytes(byte b) {
+        return b & 0xFF;
+    }
 
-        for (int i = 0; i < (ciphertext.size()-1 ); i += 2) {
-            BigInteger a = (ciphertext.get(i)).abs();
-            BigInteger b = (ciphertext.get(i + 1)).abs();
-            BigInteger powerValue = (p.subtract(BigInteger.ONE)).subtract(x);
-            BigInteger timimg = a.pow(powerValue.intValue());
-            timimg = b.multiply(timimg);
-            timimg = timimg.mod(p);
+    private byte[] decrypt(int[] ciphertext, long p, long x) {
+        byte[] plaintext = new byte[ciphertext.length/2];
 
-            plaintext.add(timimg);
+
+        for(int i = 0; i < ciphertext.length-1 ; i += 2) {
+            int a = ciphertext[i];
+            int b = ciphertext[i + 1];
+            plaintext[i/2] = (byte) ( b * GetListOfRoots.power(GetListOfRoots.power(a,x, p), GetListOfRoots.phi((int) p)-1, p) % p);
         }
         return plaintext;
-
     }
 
 

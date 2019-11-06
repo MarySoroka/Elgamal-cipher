@@ -1,79 +1,65 @@
 import java.io.*;
-import java.math.BigInteger;
-import java.util.LinkedList;
-import java.util.List;
 
-public class readWriteFile {
+class readWriteFile {
 
-    List<BigInteger> readFromFile (String fileName) throws IOException {
+    byte[] readFromFile (String fileName) throws IOException {
         FileInputStream file = new FileInputStream(fileName);
-        List<BigInteger> text = new LinkedList<>();
         byte[] inpText = file.readAllBytes();
-        BigInteger someCharecter;
-        for (int i =0; i <inpText.length; i++){
-            someCharecter = (BigInteger.valueOf(((int)inpText[i])).abs());
-            text.add(someCharecter);
-        }
         file.close();
+        return inpText;
+    }
+    void WriteInFile (String fileName,int[] cipherText) throws IOException {
+        FileOutputStream file = new FileOutputStream(fileName);
+        file.write(int2byte(cipherText));
+        file.close();
+    }
+    void WriteInFileDecrypt (String fileName,byte[] cipherText) throws IOException {
+        FileOutputStream file = new FileOutputStream(fileName);
+        file.write(cipherText);
+        file.close();
+    }
+
+    int[] readFromFileDecrypt(String fileName) throws IOException {
+        FileInputStream file = new FileInputStream(fileName);
+
+        byte[] inpText = file.readAllBytes();
+        int[] text = byte2int(inpText);
+        file.close();
+
         return text;
     }
-    void WriteInFile (String fileName,List<BigInteger> cipherText) throws IOException {
-        FileOutputStream file = new FileOutputStream(fileName);
-        List<BigInteger> text = new LinkedList<>();
-        int[] l = new int[cipherText.size()*2];
-        int i = 0;
-        for (BigInteger bigInteger : cipherText) {
-            int a = bigInteger.intValue();
-            if (a < 256 ){
-                l[i] = 0;
-                BigInteger num = new BigInteger(String.valueOf(l[i]));
-                file.write(num.toByteArray());
-                text.add(num);
-                l[i+1] = bigInteger.intValue();
-                num = new BigInteger(String.valueOf(l[i+1]));
 
-                file.write(num.toByteArray());
-                text.add(num);
-                i +=2;
+    private static byte[] int2byte(int[] src) {
+        int srcLength = src.length;
+        byte[]dst = new byte[srcLength << 2];
 
-            }else{
-                l[i] = bigInteger.intValue();
-                BigInteger num = new BigInteger(String.valueOf(l[i]));
-                file.write(num.toByteArray());
-                i ++;
-            }
-
+        for (int i=0; i<srcLength; i++) {
+            int x = src[i];
+            int j = i << 2;
+            dst[j++] = (byte) ((x) & 0xff);
+            dst[j++] = (byte) ((x >>> 8) & 0xff);
+            dst[j++] = (byte) ((x >>> 16) & 0xff);
+            dst[j++] = (byte) ((x >>> 24) & 0xff);
         }
-        file.close();
-    }
-    void WriteInFileDecrypt (String fileName,List<BigInteger> cipherText) throws IOException {
-        FileOutputStream file = new FileOutputStream(fileName);
-        for (BigInteger bigInteger : cipherText) {
-                file.write(bigInteger.toByteArray());
-        }
-        file.close();
+        return dst;
     }
 
-    List<BigInteger> readFromFileDecrypt(String fileName) throws IOException {
-        FileInputStream file = new FileInputStream(fileName);
-        List<BigInteger> text = new LinkedList<>();
-        byte[] inpText = file.readAllBytes();
-        byte[] num = new byte[2];
+    private static int[] byte2int(byte[] src) {
+        int dstLength = src.length >>> 2;
+        int[]dst = new int[dstLength];
 
-        BigInteger someCharecter;
-        for (int i =0; i <inpText.length-1; i += 2){
-            num[0] = inpText[i];
-            num[1] = inpText[i+1];
-            if ((num[0] == 0) && (num[1]==0)){
-                num[1] = inpText[i+2];
-                i++;
-            }
-            someCharecter = new BigInteger(num);
-            text.add(someCharecter);
+        for (int i=0; i<dstLength; i++) {
+            int j = i << 2;
+            int x = 0;
+            x += (src[j++] & 0xff);
+            x += (src[j++] & 0xff) << 8;
+            x += (src[j++] & 0xff) << 16;
+            x += (src[j++] & 0xff) << 24;
+            dst[i] = x;
         }
-        file.close();
-        return text;
+        return dst;
     }
+
 
 
 }

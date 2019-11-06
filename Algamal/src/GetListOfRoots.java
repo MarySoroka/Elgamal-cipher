@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 public class GetListOfRoots {
-    BigInteger calculateY(BigInteger x, BigInteger g, BigInteger p){
+    Long calculateY(long x, long g, long p){
         return power(g,x,p);
     }
 
@@ -30,29 +30,6 @@ public class GetListOfRoots {
         }
         return result;
     }
-
-     static BigInteger power(BigInteger a, BigInteger z, BigInteger m)
-    {
-        BigInteger a1 = a;
-        BigInteger z1 = z;
-        BigInteger x = BigInteger.ONE;
-        while (!z1.equals(new BigInteger("0"))) {
-            BigInteger num = z1.mod(BigInteger.TWO);
-            while(num.equals(BigInteger.ZERO)) {
-                z1 = z1.divide(BigInteger.TWO);
-                BigInteger num1 = a1.multiply(a1);
-                a1 = num1.mod(m);
-                num = z1.mod(BigInteger.TWO);
-            }
-
-                z1 = z1.subtract(BigInteger.ONE);
-
-            BigInteger num2 = x.multiply(a1);
-            x = num2.mod(m);
-        }
-        return x;
-    }
-
     public static Boolean isPrime(long x) {
         for(long i=2;i<=Math.sqrt(x);i++)
             if(x%i==0)
@@ -60,40 +37,58 @@ public class GetListOfRoots {
         return true;
     }
 
+    public static long gcd(long a, long b){
+        if(b==0)
+            return a;
+        return gcd(b, a%b);
+    }
 
 
-
-    private static Set<BigInteger> getDividers(BigInteger n) {
-        Set<BigInteger> divies = new HashSet<>();
-        BigInteger i = BigInteger.TWO;
-        BigInteger num;
-
-        while (i.compareTo(n) < 0) {
-
-            num = n.mod(i);
-            if(num.equals(BigInteger.ZERO)) {
-                    divies.add(i);
+    static long power(long a, long z, long m)
+    {
+        long a1 = a;
+        long z1 = z;
+        long x = 1;
+        while (z1 != 0) {
+            while(z1 % 2 == 0) {
+                z1 /= 2;
+                a1 = (a1*a1) % m;
             }
-            i = i.nextProbablePrime();
+            z1 = z1 - 1;
+            x = (x*a1) % m;
         }
+        return x;
+    }
+
+
+
+
+
+    public static Set<Long> getDividers(long n) {
+        Set<Long> divies = new HashSet<>();
+
+
+        for(long i = 2; i < n; i++) {
+            if (isPrime(i)) {
+                if(n % i == 0) {
+                    divies.add(i);
+                }
+            }
+        }
+
         return divies;
     }
 
-    static List<BigInteger> getPrimitiveRoots(BigInteger p) {
-        List<BigInteger> primitiveRoots = new LinkedList<>();
+    static List<Long> getPrimitiveRoots(long p) {
+        List<Long> primitiveRoots = new LinkedList<>();
 
-        Set<BigInteger> divies = getDividers(p.subtract(BigInteger.ONE));
+        Set<Long> divies = getDividers(p-1);
 
         boolean flag;
-        BigInteger i = BigInteger.TWO;
-        boolean fl = true;
-        while (i.compareTo(p) < 0) {
+        for(long i = 2; i < p; i++) {
             flag = true;
-            for (BigInteger div : divies) {
-                BigInteger num = p.subtract(BigInteger.ONE);
-                num = num.divide(div);
-                BigInteger num2 = power(i, num, p);
-                if( num2.equals(BigInteger.ONE)) {
+            for (long div : divies) {
+                if( power(i, (p-1) / div, p) == 1) {
                     flag = false;
                     break;
                 }
@@ -102,20 +97,13 @@ public class GetListOfRoots {
             if(flag) {
                 primitiveRoots.add(i);
             }
-
-            if ((p.compareTo(new BigInteger("10000")) > 0) && (i.compareTo(new BigInteger("10")) > 0) && fl){
-                i = p.subtract(new BigInteger("200"));
-                fl = false;
-
-            }
-            i = i.add(BigInteger.ONE);
         }
 
         return primitiveRoots;
     }
 
 
-    public static int phi (int n) {
+    static int phi(int n) {
         int result = n;
         for (int i=2; i*i<=n; ++i)
             if (n % i == 0) {

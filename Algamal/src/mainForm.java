@@ -26,6 +26,10 @@ public class mainForm extends JFrame {
     private JButton openFile = new JButton("Find file");
     private  JButton enc = new JButton("DO");
     private  JComboBox<String> chooseAction = new JComboBox<>();
+    private  JComboBox<String> chooseRoot = new JComboBox<>();
+    private   JLabel amount = new JLabel("Amount of roots");
+    private  JTextField amountOfRoots = new JTextField();
+
 
     private mainForm() {
 
@@ -61,6 +65,8 @@ public class mainForm extends JFrame {
         });
         container.add(p);
         container.add(keyP);
+        container.add(amount);
+        container.add(amountOfRoots);
         root.setVerticalAlignment(JLabel.CENTER);
         keyRoot.addKeyListener(new KeyListener() {
             @Override
@@ -166,7 +172,6 @@ public class mainForm extends JFrame {
         container.add(openFile);
         chooseAction.addItem("Encode");
         chooseAction.addItem("Decode");
-
         ComboboxCheck check = new ComboboxCheck();
         chooseAction.addItemListener(check);
         container.add(chooseAction);
@@ -191,6 +196,8 @@ public class mainForm extends JFrame {
                 root.setVisible(false);
                 g.setVisible(false);
                 generateRoots.setVisible(false);
+                amount.setVisible(false);
+                amountOfRoots.setVisible(false);
             } else{
                 keyK.setVisible(true);
                 keyG.setVisible(true);
@@ -220,20 +227,20 @@ public class mainForm extends JFrame {
     // listener of opening file
     class  GenerateRoots implements ActionListener {
         public void actionPerformed(ActionEvent e){
-            GetListOfRoots roots = new GetListOfRoots();
-           // List<Integer> listOfRoots = new LinkedList<>();
             BigInteger p = new BigInteger(keyP.getText());
             if(!p.isProbablePrime(p.intValue())) {
                 showResult("Value must be prime", "ERROR");
             }else{
-           List<BigInteger>  listOfRoots = GetListOfRoots.getPrimitiveRoots(new BigInteger(keyP.getText()));
-            showRoots(listOfRoots);}
+              List<Long>  listOfRoots = GetListOfRoots.getPrimitiveRoots(Long.parseLong(keyP.getText()));
+              amountOfRoots.setText(Integer.toString(listOfRoots.size()));
+              showRoots(listOfRoots);
+            }
         }
     }
     //output of 15  bytes
     private String output(String str) {
-        if (str.length() >= 15*8) {
-            return str.substring(0, 15*8) + "...";
+        if (str.length() >= 20*8) {
+            return str.substring(0, 20*8) + "...";
         }
         return  str;
     }
@@ -261,6 +268,12 @@ public class mainForm extends JFrame {
     private BigInteger convertToBigInteger(String val){
         return new BigInteger(val,10);
     }
+    public static Boolean isPrime(long x) {
+        for(long i=2;i<=Math.sqrt(x);i++)
+            if(x%i==0)
+                return false;
+        return true;
+    }
 
 
    //event class for components of main form
@@ -270,38 +283,50 @@ public class mainForm extends JFrame {
             try {
                 switch (chooseAction.getSelectedIndex()){
                     case 0: {
-                        BigInteger p = new BigInteger(keyP.getText());
-                        BigInteger k = new BigInteger(keyK.getText());
-                        BigInteger g = new BigInteger(keyG.getText());
-                        BigInteger x = new BigInteger(keyX.getText());
+                        long p = Long.parseLong(keyP.getText());
+                        long k = Long.parseLong(keyK.getText());
+                        long x = Long.parseLong(keyX.getText());
+                        long g = Long.parseLong(keyG.getText());
                         boolean exeption = true;
-                        if(!p.isProbablePrime(p.intValue())) {
+                        if(!isPrime(p)) {
                             showResult("Incorrect number P (It should be prime)", "ERROR");
                             exeption = false;
                         }else{
-
-                        if((x.compareTo(p.subtract(BigInteger.ONE))>= 0 ) || (x.compareTo(BigInteger.ONE) <= 0)) {
-                            showResult("Incorrect number X. (Need: 1 < x < p - 1)", "ERROR");
-                            exeption = false;
-                        }else{
-                        if((k.compareTo(p.subtract(BigInteger.ONE)) >= 0) || (k.compareTo(BigInteger.ONE) <=0 )) {
-                            showResult("Incorrect number K. (Need: 1 < k < p - 1)", "ERROR");
-                            exeption = false;
-                        }else{
-                        BigInteger num = p.subtract(BigInteger.ONE);
-                        if(!num.gcd(k).equals(BigInteger.ONE)) {
-                            showResult("Incorrect number K. (Need: gcd(p-1, k) == 1)", "ERROR");
-                            exeption = false;
-                        }else{
-                        List<BigInteger> primitiveRoots = GetListOfRoots.getPrimitiveRoots(p);
-                        if(!primitiveRoots.contains(g)) {
-                            showResult("G is not a primitive root of p", "ERROR");
-                            exeption = false;
-                        }}}}}
+                            if(p > Integer.MAX_VALUE) {
+                                showResult("P is too long","ERROR");
+                                exeption = false;
+                            }else{
+                                if((x >= p - 1) || (x <= 1)) {
+                                    showResult("Incorrect number X. (Need: 1 < x < p - 1)", "ERROR");
+                                    exeption = false;
+                                }else{
+                                    if((k >= p - 1) || (k <= 1)) {
+                                        showResult("Incorrect number K. (Need: 1 < k < p - 1)", "ERROR");
+                                        exeption = false;
+                                    }else{
+                                        if(GetListOfRoots.gcd(p-1, k) != 1) {
+                                            showResult("Incorrect number K. (Need: gcd(p-1, k) == 1)", "ERROR");
+                                            exeption = false;
+                                        }else{
+                                            if(p <= 255) {
+                                                showResult("Incorrect number P. (Must not be less than maximum byte value (255))", "ERROR");
+                                                exeption = false;
+                                            }else{
+                                                List<Long> primitiveRoots = GetListOfRoots.getPrimitiveRoots(p);
+                                                if(!primitiveRoots.contains(g)) {
+                                                    showResult("G is not a primitive root of p", "ERROR");
+                                                    exeption = false;
+                                                 }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         if (exeption){
 
                         Elgamal elgamal = new Elgamal();
-                        result = ((elgamal.encElgamal(convertToBigInteger(keyP.getText()), convertToBigInteger(keyG.getText()), convertToBigInteger(keyX.getText()), convertToBigInteger(keyK.getText()), nameOfFile.getText(), 0)));
+                        result = ((elgamal.encElgamal(Long.parseLong(keyP.getText(),10), Long.parseLong(keyG.getText(),10), Long.parseLong(keyX.getText(),10), Long.parseLong(keyK.getText(),10), nameOfFile.getText(), 0)));
                         showResult(String.format("\nKey: %s\nSrc: %s\nFile: %s",
                                 output(result[1]), output(result[0]), output(result[2])), "Encode");
                         }}break;
@@ -321,7 +346,7 @@ public class mainForm extends JFrame {
                                 if (exeption) {
 
                                     Elgamal elgamal = new Elgamal();
-                                    result = ((elgamal.encElgamal(convertToBigInteger(keyP.getText()), convertToBigInteger("0"), convertToBigInteger(keyX.getText()), convertToBigInteger("0"), nameOfFile.getText(), 1)));
+                                    result = ((elgamal.encElgamal(Long.parseLong(keyP.getText(),10), 0, Long.parseLong(keyX.getText()), 0, nameOfFile.getText(), 1)));
                                     showResult(String.format("\nKey: %s\nSrc: %s\nFile: %s",
                                             output(result[1]), output(result[0]), output(result[2])), "Decode");
                                 }}}}break;
