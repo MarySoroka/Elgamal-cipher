@@ -206,6 +206,8 @@ public class mainForm extends JFrame {
                 root.setVisible(true);
                 g.setVisible(true);
                 generateRoots.setVisible(true);
+                amount.setVisible(true);
+                amountOfRoots.setVisible(true);
             }
         }
     }
