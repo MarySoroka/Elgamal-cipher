@@ -226,12 +226,20 @@ public class mainForm extends JFrame {
 
         }
     }
+
+    public static Boolean isPr(long x) {
+        for(long i=2;i<=Math.sqrt(x);i++)
+            if(x%i==0)
+                return false;
+        return true;
+    }
+
     // listener of opening file
     class  GenerateRoots implements ActionListener {
         public void actionPerformed(ActionEvent e){
-            BigInteger p = new BigInteger(keyP.getText());
-            if(!p.isProbablePrime(p.intValue())) {
-                showResult("Value must be prime", "ERROR");
+            long p = Long.parseLong(keyP.getText());
+            if((!isPr(p)) || (p <= 255)) {
+                showResult("Value must be prime and p > 255", "ERROR");
             }else{
               List<Long>  listOfRoots = GetListOfRoots.getPrimitiveRoots(Long.parseLong(keyP.getText()));
               amountOfRoots.setText(Integer.toString(listOfRoots.size()));
